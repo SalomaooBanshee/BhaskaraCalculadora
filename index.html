@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Bhaskara</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        
+
+        body {
+            --fundo: #e3f2fd;
+            --calculadora: #ffffff;
+            --texto: #263238;
+            --campo: #f1f3f5;
+            --borda: #cccccc;
+            --resultado: #f1f5f9;
+
+            background: linear-gradient(to bottom, var(--fundo), #ffffff);
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            transition: 0.3s;
+        }
+
+        
+
+        body.escuro {
+            --fundo: #141e30;
+            --calculadora: #222831;
+            --texto: #ffffff;
+            --campo: #393e46;
+            --borda: #555555;
+            --resultado: #393e46;
+
+            background: linear-gradient(to bottom, #141e30, #243b55);
+        }
+
+        .calculadora {
+            background-color: var(--calculadora);
+            padding: 30px;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            transition: 0.3s;
+        }
+
+        h2 {
+            color: #2196f3;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .descricao {
+            color: var(--texto);
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--texto);
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 18px;
+            border: 1px solid var(--borda);
+            border-radius: 8px;
+            font-size: 17px;
+            background-color: var(--campo);
+            color: var(--texto);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #2196f3;
+        }
+
+        .botoes {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .calcular {
+            background-color: #2196f3;
+            color: white;
+        }
+
+        .calcular:hover {
+            background-color: #1976d2;
+        }
+
+        .limpar {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+
+        .limpar:hover {
+            background-color: #ef9a9a;
+        }
+
+        
+
+        .resultado {
+            margin-top: 25px;
+            padding: 15px;
+            background-color: var(--resultado);
+            border-radius: 8px;
+            display: none;
+            color: var(--texto);
+        }
+
+        .resultado h3 {
+            color: #2196f3;
+            margin-top: 0;
+        }
+
+        .resultado p {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .raiz {
+            font-weight: bold;
+            color: #2196f3;
+        }
+
+        .erro {
+            color: #e53935;
+            font-weight: bold;
+        }
+
+        
+
+        .tema {
+            width: 100%;
+            margin-bottom: 20px;
+            background-color: #607d8b;
+            color: white;
+        }
+
+        .tema:hover {
+            background-color: #455a64;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="calculadora">
+
+        <h2>Calculadora de Bhaskara</h2>
+
+        <button class="tema" onclick="alternarTema()" id="botaoTema">
+            🌙 Modo Escuro
+        </button>
+
+        <p class="descricao">
+            Informe os coeficientes da equação do segundo grau.
+        </p>
+
+        <label for="valorA">Coeficiente A:</label>
+        <input type="number" id="valorA" step="any"
+            placeholder="Digite o valor de A">
+
+        <label for="valorB">Coeficiente B:</label>
+        <input type="number" id="valorB" step="any"
+            placeholder="Digite o valor de B">
+
+        <label for="valorC">Coeficiente C:</label>
+        <input type="number" id="valorC" step="any"
+            placeholder="Digite o valor de C">
+
+        <div class="botoes">
+
+            <button class="calcular" onclick="calcular()">
+                Calcular
+            </button>
+
+            <button class="limpar" onclick="limpar()">
+                Limpar
+            </button>
+
+        </div>
+
+        <div class="resultado" id="resultado">
+
+            <h3>Resultado</h3>
+
+            <p id="delta"></p>
+
+            <p id="raizes"></p>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        
+
+        function alternarTema() {
+
+            document.body.classList.toggle("escuro");
+
+            let botao = document.getElementById("botaoTema");
+
+            if (document.body.classList.contains("escuro")) {
+
+                botao.innerHTML = "☀️ Modo Claro";
+
+            } else {
+
+                botao.innerHTML = "🌙 Modo Escuro";
+
+            }
+
+        }
+
+        
+
+        function calcular() {
+
+            let a = Number(document.getElementById("valorA").value);
+            let b = Number(document.getElementById("valorB").value);
+            let c = Number(document.getElementById("valorC").value);
+
+            let resultado = document.getElementById("resultado");
+            let deltaTexto = document.getElementById("delta");
+            let raizesTexto = document.getElementById("raizes");
+
+            
+
+            if (
+                document.getElementById("valorA").value === "" ||
+                document.getElementById("valorB").value === "" ||
+                document.getElementById("valorC").value === ""
+            ) {
+
+                resultado.style.display = "block";
+                deltaTexto.innerHTML = "";
+
+                raizesTexto.innerHTML =
+                    "<span class='erro'>Preencha todos os campos!</span>";
+
+                return;
+
+            }
+
+            
+
+            if (a === 0) {
+
+                resultado.style.display = "block";
+                deltaTexto.innerHTML = "";
+
+                raizesTexto.innerHTML =
+                    "<span class='erro'>O valor de A não pode ser zero!</span>";
+
+                return;
+
+            }
+
+            
+
+            let delta = (b * b) - (4 * a * c);
+
+            resultado.style.display = "block";
+
+            deltaTexto.innerHTML =
+                "<strong>Delta (Δ):</strong> " + delta;
+
+            
+
+            if (delta > 0) {
+
+                let x1 = (-b + Math.sqrt(delta)) / (2 * a);
+                let x2 = (-b - Math.sqrt(delta)) / (2 * a);
+
+                raizesTexto.innerHTML =
+                    "<strong>Existem duas raízes reais:</strong><br><br>" +
+                    "<span class='raiz'>X₁ = " + x1.toFixed(2) + "</span><br>" +
+                    "<span class='raiz'>X₂ = " + x2.toFixed(2) + "</span>";
+
+            }
+
+            else if (delta === 0) {
+
+                let x = -b / (2 * a);
+
+                raizesTexto.innerHTML =
+                    "<strong>Existe uma raiz real:</strong><br><br>" +
+                    "<span class='raiz'>X₁ = X₂ = " +
+                    x.toFixed(2) + "</span>";
+
+            }
+
+            else {
+
+                raizesTexto.innerHTML =
+                    "<span class='erro'>Delta negativo!</span><br><br>" +
+                    "A equação não possui raízes reais.";
+
+            }
+
+        }
+
+        
+
+        function limpar() {
+
+            document.getElementById("valorA").value = "";
+            document.getElementById("valorB").value = "";
+            document.getElementById("valorC").value = "";
+
+            document.getElementById("resultado").style.display = "none";
+
+        }
+
+    </script>
+
+</body>
+
+</html>
